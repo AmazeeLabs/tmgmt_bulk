@@ -5,7 +5,6 @@ core = 7.x
 
 dependencies[] = tmgmt_ui
 
-files[] = includes/TMGMTBulkJobItem.inc
 files[] = includes/TMGMTBulkSelectorInterface.inc
 files[] = includes/TMGMTBulkSelector.inc
 files[] = includes/TMGMTBulkSelector_entity.inc

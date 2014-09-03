@@ -4,11 +4,10 @@
 class TMGMTBulkSelector_locale extends TMGMTBulkSelector implements TMGMTBulkSelectorInterface {
 
   //AXXX
-  public function searchItems(array $item_types, $translated_to, $not_exists_in_jobs, array $specific) {
-    $ret = array();
+  public function searchItems($item_type, $translated_to, $not_exists_in_jobs, array $specific) {
     $query = db_select('locales_source', 'ls')
-      ->condition('ls.textgroup', $item_types, 'IN')
-      ->fields('ls', array('lid', 'textgroup'));
+      ->condition('ls.textgroup', $item_type)
+      ->fields('ls', array('lid'));
 
     if ($translated_to) {
       $translation_table_alias = $query->leftJoin(
@@ -18,29 +17,26 @@ class TMGMTBulkSelector_locale extends TMGMTBulkSelector implements TMGMTBulkSel
         array(':language' => $translated_to)
       );
       $query->isNotNull("$translation_table_alias.lid");
-      if (module_exists('l10n_update') && !empty($specific['only_custom'])) {
+      if (module_exists('l10n_update') && !empty($specific['filter_l10n_update'])) {
         module_load_include('inc', 'l10n_update');
         $query->condition("$translation_table_alias.l10n_status", L10N_UPDATE_STRING_CUSTOM);
       }
     }
 
+    $item_ids = $query->execute()->fetchCol();
     if ($not_exists_in_jobs) {
-      $this->notExistsInJobs($query, 'locale', 'ls.textgroup', 'ls.lid', $not_exists_in_jobs);
+      $item_ids = $this->filterExistingInJobs('locale', $item_type, $item_ids, $not_exists_in_jobs);
     }
-
-    foreach ($query->execute()->fetchAll() as $row) {
-      $ret[] = new TMGMTBulkJobItem('locale', $row->textgroup, $row->lid);
-    }
-    return $ret;
+    return $item_ids;
   }
 
   //AXXX
   public function getFormSpecificFilters() {
     if (module_exists('l10n_update')) {
       return array(
-        'only_custom' => array(
+        'filter_l10n_update' => array(
           '#type' => 'checkbox',
-          '#title' => t('Include only custom strings'),
+          '#title' => t('Filter out strings translated with the Localization update module'),
           //AXXX desc
           '#states' => array(
             'invisible' => array(

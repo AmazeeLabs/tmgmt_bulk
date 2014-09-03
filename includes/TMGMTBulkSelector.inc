@@ -4,24 +4,20 @@
 class TMGMTBulkSelector {
 
   //AXXX
-  protected function notExistsInJobs(SelectQueryInterface $query, $plugin, $item_type_field_alias, $item_id_field_alias, $job_target_language) {
-    $job_item_table_alias = $query->leftJoin(
-      'tmgmt_job_item',
-      NULL,
-      "%alias.plugin = :plugin AND %alias.item_type = $item_type_field_alias AND %alias.item_id = $item_id_field_alias",
-      array(':plugin' => $plugin)
-    );
-    $job_table_alias = $query->leftJoin(
+  protected function filterExistingInJobs($plugin, $item_type, $item_ids, $job_target_language) {
+    $query = db_select('tmgmt_job_item', 'ji')
+      ->condition('ji.plugin', $plugin)
+      ->condition('ji.item_type', $item_type)
+      ->condition('ji.item_id', $item_ids, 'IN')
+      ->fields('ji', array('item_id'))
+      ->distinct();
+    $query->innerJoin(
       'tmgmt_job',
-      NULL,
-      "%alias.tjid = $job_item_table_alias.tjid"
+      'j',
+      'j.tjid = ji.tjid AND j.target_language = :language',
+      array(':language' => $job_target_language)
     );
-    $query->condition(
-      db_or()
-        ->condition("$job_table_alias.target_language", $job_target_language, '<>')
-        ->isNull("$job_table_alias.target_language")
-    );
-    $query->distinct();
+    return array_diff($item_ids, $query->execute()->fetchCol());
   }
 
   //AXXX def

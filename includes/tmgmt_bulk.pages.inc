@@ -2,6 +2,12 @@
 
 //AXXX
 function tmgmt_bulk_form($form, &$form_state) {
+
+  //AXXX
+  unset($_SESSION['tmgmt_bulk_storage']);
+  unset($_SESSION['tmgmt_bulk_target_language']);
+  unset($_SESSION['tmgmt_bulk_jobs_by_source_language']);
+
 //AXXX desc
 
   $languages = array();
@@ -66,36 +72,167 @@ function tmgmt_bulk_form($form, &$form_state) {
       ) + $selector->getFormSpecificFilters();
     }
   }
+
   $form['actions'] = array('#type' => 'actions');
-  //AXXX notify about long time??
-  $form['actions']['submit'] = array(
+  $form['actions']['request_translation'] = array(
+    '#type' => 'submit',
+    '#value' => t('Request translation'),
+  );
+  $form['actions']['add_to_cart'] = array(
     '#type' => 'submit',
     '#value' => t('Add to cart'),
   );
-
   return $form;
 }
 
 //AXXX
 function tmgmt_bulk_form_submit(&$form, &$form_state) {
-  /* @var $ret TMGMTBulkJobItem[] */
-  $ret = array();
+  switch ($form_state['triggering_element']['#value']) {
+    case t('Add to cart'):
+      $batch_redirect = 'admin/tmgmt/bulk/add-to-cart/0';
+      break;
+    case t('Request translation'):
+      $batch_redirect = 'admin/tmgmt/bulk/request-translation';
+      break;
+    default:
+      return;
+  }
   $values = isset($form_state['values']['plugins']) ? $form_state['values']['plugins'] : array();
-  //AXXX set timeout
+  $operations = array();
   foreach ($values as $plugin => $state) {
     if ($state['include'] && ($item_types = array_filter($state['item_types']))) {
-      $translated_to = $state['filters']['translated_to'];
-      $not_exists_in_jobs = $state['filters']['not_exists_in_jobs'];
-      $specific = isset($state['filters']['specific']) ? $state['filters']['specific'] : array();
-      $ret = array_merge($ret, _tmgmt_bulk_get_selector($plugin)->searchItems($item_types, $translated_to, $not_exists_in_jobs, $specific));
+      foreach ($item_types as $item_type) {
+        $operations[] = array('_tmgmt_bulk_search_and_store', array($plugin, $item_type, $state['filters']));
+      }
     }
   }
+  if (!empty($operations)) {
+    $batch = array(
+      'title' => t('Searching for items...'),
+      'operations' => $operations,
+      'file' => drupal_get_path('module', 'tmgmt_bulk') . '/includes/tmgmt_bulk.batch.inc',
+    );
+    batch_set($batch);
+    batch_process($batch_redirect);
+  }
+}
+
+//AXXX
+function tmgmt_bulk_request_translation_form($form, &$form_state) {
+  if (empty($_SESSION['tmgmt_bulk_storage']) || !($items_count = count($_SESSION['tmgmt_bulk_storage'], COUNT_RECURSIVE))) {
+    //AXXX mess 0
+    drupal_goto('admin/tmgmt/bulk'); //AXXX to storage_empty()
+  }
+  $languages = array();
+  foreach (language_list() as $langcode => $language) {
+    $languages[$langcode] = $language->name;
+  }
+  $form['description'] = array(
+    '#markup' => format_plural($items_count, 'You are going to request translation for 1 item.', 'You are going to request translation for @count items.'),
+  );
+  $form['target_language'] = array(
+    '#type' => 'select',
+    '#title' => t('Target language'),
+    '#options' => $languages,
+    '#required' => TRUE,
+  );
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['request_translation'] = array(
+    '#type' => 'submit',
+    '#value' => t('Request translation'),
+  );
+  $form['actions']['cancel'] = array(
+    '#type' => 'link',
+    '#title' => t('Cancel'),
+    '#href' => 'admin/tmgmt/bulk',
+  );
+  return $form;
+}
+
+//AXXX
+function tmgmt_bulk_request_translation_form_submit(&$form, &$form_state) {
+  $_SESSION['tmgmt_bulk_target_language'] = $form_state['values']['target_language'];
+  $operations = array();
+  $items = array();
+  foreach ($_SESSION['tmgmt_bulk_storage'] as $plugin => $_) {
+    foreach ($_ as $item_type => $item_ids) {
+      foreach ($item_ids as $item_id) {
+        if (count($items) == 50) {
+          $operations[] = array('_tmgmt_bulk_request_translation', array($items));
+          $items = array();
+        }
+        else {
+          $items[] = array('plugin' => $plugin, 'item_type' => $item_type, 'item_id' => $item_id);
+        }
+      }
+    }
+  }
+  $operations[] = array('_tmgmt_bulk_request_translation', array($items));
+  $batch = array(
+    'title' => t('Creating job(s)...'),
+    'operations' => $operations,
+    'file' => drupal_get_path('module', 'tmgmt_bulk') . '/includes/tmgmt_bulk.batch.inc',
+  );
+  batch_set($batch);
+  batch_process('admin/tmgmt/bulk');
+}
+
+//AXXX
+function tmgmt_bulk_add_to_cart($force) {
+  if (empty($_SESSION['tmgmt_bulk_storage']) || !($items_count = count($_SESSION['tmgmt_bulk_storage'], COUNT_RECURSIVE))) {
+    //AXXX mess 0
+    drupal_goto('admin/tmgmt/bulk');
+  }
+  $tmgmt_cart_count = !(empty($_SESSION['tmgmt_cart'])) ? count($_SESSION['tmgmt_cart']) : 0;
+  if (!$force && ($items_count + $tmgmt_cart_count) > 1000) {
+    return drupal_get_form('tmgmt_bulk_add_to_cart_warning_form', $items_count, $tmgmt_cart_count);
+  }
   $i = 0;
-//  foreach ($ret as $item) {
-//    if (tmgmt_ui_cart_get()->addJobItem($item->plugin, $item->item_type, $item->item_id)) {
-//      $i++;
-//    }
-//  }
-  dpm(count($ret));
+  foreach ($_SESSION['tmgmt_bulk_storage'] as $plugin => $_) {
+    foreach ($_ as $item_type => $item_ids) {
+      foreach ($item_ids as $item_id) {
+        if (tmgmt_ui_cart_get()->addJobItem($plugin, $item_type, $item_id)) {
+          $i++;
+        }
+      }
+    }
+  }
+  unset($_SESSION['tmgmt_bulk_storage']);
   drupal_set_message(format_plural($i, '1 item has been added to the cart.', '@count items have been added to the cart.'));
+  drupal_goto('admin/tmgmt/bulk');
+}
+
+//AXXX
+function tmgmt_bulk_add_to_cart_warning_form($form, &$form_state, $items_count, $tmgmt_cart_count) {
+  $form['description'] = array(
+    '#markup' => "$items_count, $tmgmt_cart_count", //AXXX
+  );
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['request_translation'] = array(
+    '#type' => 'submit',
+    '#value' => t('Request translation'),
+  );
+  $form['actions']['add_to_cart'] = array(
+    '#type' => 'submit',
+    '#value' => t('Add to cart'),
+  );
+  $form['actions']['cancel'] = array(
+    '#type' => 'link',
+    '#title' => t('Cancel'),
+    '#href' => 'admin/tmgmt/bulk',
+  );
+  return $form;
+}
+
+//AXXX
+function tmgmt_bulk_add_to_cart_warning_form_submit(&$form, &$form_state) {
+  if ($form_state['triggering_element']['#value'] == t('Request translation')) {
+    drupal_goto('admin/tmgmt/bulk/request-translation');
+  }
+  elseif ($form_state['triggering_element']['#value'] == t('Add to cart')) {
+    drupal_goto('admin/tmgmt/bulk/add-to-cart/1');
+  }
+  else {
+    drupal_goto('admin/tmgmt/bulk');
+  }
 }

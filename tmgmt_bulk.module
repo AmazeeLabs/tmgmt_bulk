@@ -17,6 +17,20 @@ function tmgmt_bulk_menu() {
     'type' => MENU_LOCAL_TASK,
     'weight' => 30,
   );
+  $items['admin/tmgmt/bulk/add-to-cart/%'] = array(
+    'page callback' => 'tmgmt_bulk_add_to_cart',
+    'page arguments' => array(4),
+    'access arguments' => array('create translation jobs'),
+    'file' => 'includes/tmgmt_bulk.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+  $items['admin/tmgmt/bulk/request-translation'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('tmgmt_bulk_request_translation_form'),
+    'access arguments' => array('create translation jobs'),
+    'file' => 'includes/tmgmt_bulk.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
   return $items;
 }
 
