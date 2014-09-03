@@ -1,9 +1,17 @@
 <?php
 
-//AXXX
+/**
+ * Base class for all TMGMTBulkSelectorInterface implementations.
+ *
+ * Contains default implementations of some methods, and helper methods.
+ */
 class TMGMTBulkSelector {
 
-  //AXXX
+  /**
+   * Processes $item_ids with $job_target_language filter.
+   *
+   * @see TMGMTBulkSelectorInterface::searchItems()
+   */
   protected function filterExistingInJobs($plugin, $item_type, $item_ids, $job_target_language) {
     $query = db_select('tmgmt_job_item', 'ji')
       ->condition('ji.plugin', $plugin)
@@ -20,7 +28,11 @@ class TMGMTBulkSelector {
     return array_diff($item_ids, $query->execute()->fetchCol());
   }
 
-  //AXXX def
+  /**
+   * Default implementation.
+   *
+   * @see TMGMTBulkSelectorInterface::getFormSpecificFilters()
+   */
   public function getFormSpecificFilters() {
     return array();
   }

@@ -1,9 +1,13 @@
 <?php
 
-//AXXX
+/**
+ * Selector for the "locale" source plugin.
+ */
 class TMGMTBulkSelector_locale extends TMGMTBulkSelector implements TMGMTBulkSelectorInterface {
 
-  //AXXX
+  /**
+   * @inheritdoc
+   */
   public function searchItems($item_type, $translated_to, $not_exists_in_jobs, array $specific) {
     $query = db_select('locales_source', 'ls')
       ->condition('ls.textgroup', $item_type)
@@ -30,14 +34,16 @@ class TMGMTBulkSelector_locale extends TMGMTBulkSelector implements TMGMTBulkSel
     return $item_ids;
   }
 
-  //AXXX
+  /**
+   * @inheritdoc
+   */
   public function getFormSpecificFilters() {
     if (module_exists('l10n_update')) {
       return array(
         'filter_l10n_update' => array(
           '#type' => 'checkbox',
           '#title' => t('Filter out strings translated with the Localization update module'),
-          //AXXX desc
+          '#description' => t('When checked: the result will only include manually translated strings.'),
           '#states' => array(
             'invisible' => array(
               'select[name="plugins[locale][filters][translated_to]"]' => array('value' => ''),

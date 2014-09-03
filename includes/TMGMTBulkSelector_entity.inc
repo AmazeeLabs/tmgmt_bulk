@@ -1,9 +1,13 @@
 <?php
 
-//AXXX
+/**
+ * Selector for the "entity" source plugin.
+ */
 class TMGMTBulkSelector_entity extends TMGMTBulkSelector implements TMGMTBulkSelectorInterface {
 
-  //AXXX
+  /**
+   * @inheritdoc
+   */
   public function searchItems($item_type, $translated_to, $not_exists_in_jobs, array $specific) {
 
     // Base query.

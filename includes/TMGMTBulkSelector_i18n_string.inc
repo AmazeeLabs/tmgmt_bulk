@@ -1,15 +1,21 @@
 <?php
 
-//AXXX
+/**
+ * Selector for the "i18n_string" source plugin.
+ */
 class TMGMTBulkSelector_i18n_string extends TMGMTBulkSelector implements TMGMTBulkSelectorInterface {
 
-  //AXXX
+  /**
+   * @inheritdoc
+   */
   public function searchItems($item_type, $translated_to, $not_exists_in_jobs, array $specific) {
+
+    // Base query.
     $query = db_select('i18n_string', 'i18n_s')->distinct();
     $item_id_expression = "concat(i18n_s.textgroup, ':', i18n_s.type, ':', i18n_s.objectid)";
     $query->addExpression($item_id_expression);
 
-    //AXXX
+    // Filter by type as tmgmt_i18n_string_get_strings() function does.
     $info = i18n_object_info($item_type);
     $query->condition('i18n_s.textgroup', $info['string translation']['textgroup']);
     if (isset($info['string translation']['type'])) {

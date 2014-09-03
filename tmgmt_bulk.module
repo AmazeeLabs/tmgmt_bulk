@@ -1,11 +1,8 @@
 <?php
 
 /**
- * @file
- * AXXX
+ * Implements hook_menu().
  */
-
-//AXXX
 function tmgmt_bulk_menu() {
   $items = array();
   $items['admin/tmgmt/bulk'] = array(
@@ -35,9 +32,10 @@ function tmgmt_bulk_menu() {
 }
 
 /**
- * AXXX
+ * Returns TMGMTBulkSelector plugin for the TMGMT source plugin.
  *
  * @param string $source_plugin
+ *   The machine name of the TMGMT source plugin.
  *
  * @return TMGMTBulkSelectorInterface|null
  */

@@ -1,14 +1,14 @@
 <?php
 
-//AXXX
+/**
+ * Form callback: items selector for bulk job creation.
+ */
 function tmgmt_bulk_form($form, &$form_state) {
 
-  //AXXX
+  // Always clear session variables here.
   unset($_SESSION['tmgmt_bulk_storage']);
   unset($_SESSION['tmgmt_bulk_target_language']);
   unset($_SESSION['tmgmt_bulk_jobs_by_source_language']);
-
-//AXXX desc
 
   $languages = array();
   foreach (language_list() as $langcode => $language) {
@@ -58,13 +58,13 @@ function tmgmt_bulk_form($form, &$form_state) {
       $form['plugins'][$plugin_type]['filters']['translated_to'] = array(
         '#type' => 'select',
         '#title' => t('Translated to'),
-          //AXXX desc
+        '#description' => t('When language is selected: the result will only include items that are already translated to the specified target language.'),
         '#options' => array('' => '') + $languages,
       ) + $label_inline;
       $form['plugins'][$plugin_type]['filters']['not_exists_in_jobs'] = array(
         '#type' => 'select',
         '#title' => t('Does not exist in jobs with target language'),
-          //AXXX desc
+        '#description' => t('When language is selected: the result will not include items that are already exist in jobs with the specified target language.'),
         '#options' => array('' => '') + $languages,
       ) + $label_inline;
       $form['plugins'][$plugin_type]['filters']['specific'] = array(
@@ -85,7 +85,9 @@ function tmgmt_bulk_form($form, &$form_state) {
   return $form;
 }
 
-//AXXX
+/**
+ * Form submit handler for the tmgmt_bulk_form form.
+ */
 function tmgmt_bulk_form_submit(&$form, &$form_state) {
   switch ($form_state['triggering_element']['#value']) {
     case t('Add to cart'):
@@ -117,11 +119,13 @@ function tmgmt_bulk_form_submit(&$form, &$form_state) {
   }
 }
 
-//AXXX
+/**
+ * Form callback: request translation for the items from the storage.
+ */
 function tmgmt_bulk_request_translation_form($form, &$form_state) {
   if (empty($_SESSION['tmgmt_bulk_storage']) || !($items_count = count($_SESSION['tmgmt_bulk_storage'], COUNT_RECURSIVE))) {
-    //AXXX mess 0
-    drupal_goto('admin/tmgmt/bulk'); //AXXX to storage_empty()
+    drupal_set_message(t('No items was found.'), 'warning');
+    drupal_goto('admin/tmgmt/bulk');
   }
   $languages = array();
   foreach (language_list() as $langcode => $language) {
@@ -149,7 +153,9 @@ function tmgmt_bulk_request_translation_form($form, &$form_state) {
   return $form;
 }
 
-//AXXX
+/**
+ * Form submit handler for the tmgmt_bulk_request_translation_form form.
+ */
 function tmgmt_bulk_request_translation_form_submit(&$form, &$form_state) {
   $_SESSION['tmgmt_bulk_target_language'] = $form_state['values']['target_language'];
   $operations = array();
@@ -177,10 +183,12 @@ function tmgmt_bulk_request_translation_form_submit(&$form, &$form_state) {
   batch_process('admin/tmgmt/bulk');
 }
 
-//AXXX
+/**
+ * Page callback: adds storage items to the cart.
+ */
 function tmgmt_bulk_add_to_cart($force) {
   if (empty($_SESSION['tmgmt_bulk_storage']) || !($items_count = count($_SESSION['tmgmt_bulk_storage'], COUNT_RECURSIVE))) {
-    //AXXX mess 0
+    drupal_set_message(t('No items was found.'), 'warning');
     drupal_goto('admin/tmgmt/bulk');
   }
   $tmgmt_cart_count = !(empty($_SESSION['tmgmt_cart'])) ? count($_SESSION['tmgmt_cart']) : 0;
@@ -202,10 +210,22 @@ function tmgmt_bulk_add_to_cart($force) {
   drupal_goto('admin/tmgmt/bulk');
 }
 
-//AXXX
+/**
+ * Form callback: warns user about big number of items scheduled to be added to
+ * cart.
+ */
 function tmgmt_bulk_add_to_cart_warning_form($form, &$form_state, $items_count, $tmgmt_cart_count) {
+  $total = $items_count + $tmgmt_cart_count;
   $form['description'] = array(
-    '#markup' => "$items_count, $tmgmt_cart_count", //AXXX
+    '#markup' => t('WARNING: You are above to add %items_count item(s) to the cart (which already contains %tmgmt_cart_count items(s)).
+<br />The total amount of the items in the cart will become %total, and this could lead to the following problems:
+<br />1) the cart UI can become unresponsive,
+<br />2) the operation itself can take long time, and can be interrupted by the PHP execution time limit.
+<br />Are you sure you want to continue?', array(
+      '%items_count' => $items_count,
+      '%tmgmt_cart_count' => $tmgmt_cart_count,
+      '%total' => $total,
+    )),
   );
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['request_translation'] = array(
@@ -224,7 +244,9 @@ function tmgmt_bulk_add_to_cart_warning_form($form, &$form_state, $items_count, 
   return $form;
 }
 
-//AXXX
+/**
+ * Form submit handler for the tmgmt_bulk_add_to_cart_warning_form form.
+ */
 function tmgmt_bulk_add_to_cart_warning_form_submit(&$form, &$form_state) {
   if ($form_state['triggering_element']['#value'] == t('Request translation')) {
     drupal_goto('admin/tmgmt/bulk/request-translation');

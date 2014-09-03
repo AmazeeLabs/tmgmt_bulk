@@ -1,14 +1,25 @@
 <?php
 
-//AXXX
-function _tmgmt_bulk_search_and_store($plugin, $item_type, $filters) {
+/**
+ * Batch operation callback: searches for items and stores them in the session.
+ *
+ * @param string $plugin
+ * @param string $item_type
+ * @param array $filters
+ */
+function _tmgmt_bulk_search_and_store($plugin, $item_type, array $filters) {
   $translated_to = $filters['translated_to'];
   $not_exists_in_jobs = $filters['not_exists_in_jobs'];
   $specific = isset($filters['specific']) ? $filters['specific'] : array();
   $_SESSION['tmgmt_bulk_storage'][$plugin][$item_type] = _tmgmt_bulk_get_selector($plugin)->searchItems($item_type, $translated_to, $not_exists_in_jobs, $specific);
 }
 
-//AXXX
+/**
+ * Batch operation callback: request translation for items.
+ *
+ * @param $items
+ *   An array with the following keys: "plugin", "item_type", "item_id".
+ */
 function _tmgmt_bulk_request_translation($items) {
   if (!isset($_SESSION['tmgmt_bulk_jobs_by_source_language'])) {
     $_SESSION['tmgmt_bulk_jobs_by_source_language'] = array();
