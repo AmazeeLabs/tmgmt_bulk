@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * @file
+ * AXXX
+ */
+
+//AXXX
+function tmgmt_bulk_menu() {
+  $items = array();
+  $items['admin/tmgmt/bulk'] = array(
+    'title' => 'Bulk job creation',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('tmgmt_bulk_form'),
+    'access arguments' => array('create translation jobs'),
+    'file' => 'includes/tmgmt_bulk.pages.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 30,
+  );
+  return $items;
+}
+
+/**
+ * AXXX
+ *
+ * @param string $source_plugin
+ *
+ * @return TMGMTBulkSelectorInterface|null
+ */
+function _tmgmt_bulk_get_selector($source_plugin) {
+  $cache =& drupal_static(__FUNCTION__, array());
+  if (!array_key_exists($source_plugin, $cache)) {
+    $cache[$source_plugin] = NULL;
+    $class = 'TMGMTBulkSelector_' . $source_plugin;
+    if (class_exists($class)
+        && in_array('TMGMTBulkSelectorInterface', (array) class_implements($class, TRUE), TRUE)
+        && in_array('TMGMTBulkSelector', (array) class_parents($class, TRUE), TRUE)) {
+      $cache[$source_plugin] = new $class;
+    }
+  }
+  return $cache[$source_plugin];
+}

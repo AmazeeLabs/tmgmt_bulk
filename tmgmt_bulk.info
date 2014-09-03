@@ -1,0 +1,13 @@
+name = Translation Management Bulk Job Creation
+description = Allows to create translation jobs basing on existing translations.
+package = Translation Management
+core = 7.x
+
+dependencies[] = tmgmt_ui
+
+files[] = includes/TMGMTBulkJobItem.inc
+files[] = includes/TMGMTBulkSelectorInterface.inc
+files[] = includes/TMGMTBulkSelector.inc
+files[] = includes/TMGMTBulkSelector_entity.inc
+files[] = includes/TMGMTBulkSelector_i18n_string.inc
+files[] = includes/TMGMTBulkSelector_locale.inc
