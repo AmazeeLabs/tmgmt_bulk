@@ -1,11 +1,21 @@
 <?php
 
 /**
+ * @file
+ * Batch related functions.
+ */
+
+/**
  * Batch operation callback: searches for items and stores them in the session.
  *
  * @param string $plugin
+ *   Selector plugin name.
  * @param string $item_type
+ *   Source plugin item type.
  * @param array $filters
+ *   An associative array with filter values. Each item represents an argument
+ *   to be passed to searchItems() method of the selector plugin.
+ *   @see TMGMTBulkSelectorInterface::searchItems()
  */
 function _tmgmt_bulk_search_and_store($plugin, $item_type, array $filters) {
   $translated_to = $filters['translated_to'];
@@ -17,7 +27,7 @@ function _tmgmt_bulk_search_and_store($plugin, $item_type, array $filters) {
 /**
  * Batch operation callback: request translation for items.
  *
- * @param $items
+ * @param array $items
  *   An array with the following keys: "plugin", "item_type", "item_id".
  */
 function _tmgmt_bulk_request_translation($items) {

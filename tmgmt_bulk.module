@@ -38,6 +38,7 @@ function tmgmt_bulk_menu() {
  *   The machine name of the TMGMT source plugin.
  *
  * @return TMGMTBulkSelectorInterface|null
+ *   Selector plugin instance or NULL.
  */
 function _tmgmt_bulk_get_selector($source_plugin) {
   $cache =& drupal_static(__FUNCTION__, array());
@@ -47,7 +48,7 @@ function _tmgmt_bulk_get_selector($source_plugin) {
     if (class_exists($class)
         && in_array('TMGMTBulkSelectorInterface', (array) class_implements($class, TRUE), TRUE)
         && in_array('TMGMTBulkSelector', (array) class_parents($class, TRUE), TRUE)) {
-      $cache[$source_plugin] = new $class;
+      $cache[$source_plugin] = new $class();
     }
   }
   return $cache[$source_plugin];

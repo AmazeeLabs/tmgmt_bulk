@@ -14,8 +14,8 @@ interface TMGMTBulkSelectorInterface {
    *   The langcode. If not empty string: the result will include only items
    *   that already have translations to this language.
    * @param string $not_exists_in_jobs
-   *   The langcode. If not empty string: items, that are exist in jobs with this
-   *   target language, will be filtered out.
+   *   The langcode. If not empty string: items, that are exist in jobs with
+   *   this target language, will be filtered out.
    * @param array $specific
    *   An array of values from the plugin-specific form elements.
    *
@@ -28,6 +28,7 @@ interface TMGMTBulkSelectorInterface {
    * Returns an array of form elements that represents plugin-specific filters.
    *
    * @return array
+   *   Form render array.
    */
   public function getFormSpecificFilters();
 }

@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * User interface callbacks.
+ */
+
+/**
  * Form callback: items selector for bulk job creation.
  */
 function tmgmt_bulk_form($form, &$form_state) {
@@ -93,13 +98,16 @@ function tmgmt_bulk_form_submit(&$form, &$form_state) {
     case t('Add to cart'):
       $batch_redirect = 'admin/tmgmt/bulk/add-to-cart/0';
       break;
+
     case t('Request translation'):
       $batch_redirect = 'admin/tmgmt/bulk/request-translation';
       break;
+
     default:
       return;
   }
-  $values = isset($form_state['values']['plugins']) ? $form_state['values']['plugins'] : array();
+  $values = isset($form_state['values']['plugins'])
+    ? $form_state['values']['plugins'] : array();
   $operations = array();
   foreach ($values as $plugin => $state) {
     if ($state['include'] && ($item_types = array_filter($state['item_types']))) {
@@ -164,11 +172,17 @@ function tmgmt_bulk_request_translation_form_submit(&$form, &$form_state) {
     foreach ($_ as $item_type => $item_ids) {
       foreach ($item_ids as $item_id) {
         if (count($items) == 50) {
-          $operations[] = array('_tmgmt_bulk_request_translation', array($items));
+          $operations[] = array(
+            '_tmgmt_bulk_request_translation', array($items),
+          );
           $items = array();
         }
         else {
-          $items[] = array('plugin' => $plugin, 'item_type' => $item_type, 'item_id' => $item_id);
+          $items[] = array(
+            'plugin' => $plugin,
+            'item_type' => $item_type,
+            'item_id' => $item_id,
+          );
         }
       }
     }
@@ -211,21 +225,22 @@ function tmgmt_bulk_add_to_cart($force) {
 }
 
 /**
- * Form callback: warns user about big number of items scheduled to be added to
- * cart.
+ * Form callback: warns about big number of items scheduled to be added to cart.
  */
 function tmgmt_bulk_add_to_cart_warning_form($form, &$form_state, $items_count, $tmgmt_cart_count) {
   $total = $items_count + $tmgmt_cart_count;
-  $form['description'] = array(
-    '#markup' => t('WARNING: You are above to add %items_count item(s) to the cart (which already contains %tmgmt_cart_count items(s)).
+  $message = 'WARNING: You are above to add %items_count item(s) to the cart (which already contains %tmgmt_cart_count items(s)).
 <br />The total amount of the items in the cart will become %total, and this could lead to the following problems:
 <br />1) the cart UI can become unresponsive,
 <br />2) the operation itself can take long time, and can be interrupted by the PHP execution time limit.
-<br />Are you sure you want to continue?', array(
-      '%items_count' => $items_count,
-      '%tmgmt_cart_count' => $tmgmt_cart_count,
-      '%total' => $total,
-    )),
+<br />Are you sure you want to continue?';
+  $args = array(
+    '%items_count' => $items_count,
+    '%tmgmt_cart_count' => $tmgmt_cart_count,
+    '%total' => $total,
+  );
+  $form['description'] = array(
+    '#markup' => t($message, $args),
   );
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['request_translation'] = array(
