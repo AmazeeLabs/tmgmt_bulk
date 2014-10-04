@@ -6,7 +6,7 @@
 class TMGMTBulkSelector_locale extends TMGMTBulkSelector implements TMGMTBulkSelectorInterface {
 
   /**
-   * @inheritdoc
+   * {@inheritdoc}
    */
   public function searchItems($item_type, $translated_to, $not_exists_in_jobs, array $specific) {
     $query = db_select('locales_source', 'ls')
@@ -35,7 +35,7 @@ class TMGMTBulkSelector_locale extends TMGMTBulkSelector implements TMGMTBulkSel
   }
 
   /**
-   * @inheritdoc
+   * {@inheritdoc}
    */
   public function getFormSpecificFilters() {
     if (module_exists('l10n_update')) {

@@ -6,7 +6,7 @@
 class TMGMTBulkSelector_i18n_string extends TMGMTBulkSelector implements TMGMTBulkSelectorInterface {
 
   /**
-   * @inheritdoc
+   * {@inheritdoc}
    */
   public function searchItems($item_type, $translated_to, $not_exists_in_jobs, array $specific) {
 
