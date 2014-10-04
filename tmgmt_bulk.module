@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * The module allows to create translation jobs based on existing translations.
+ */
+
+/**
  * Implements hook_menu().
  */
 function tmgmt_bulk_menu() {

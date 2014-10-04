@@ -14,8 +14,7 @@
  *   Source plugin item type.
  * @param array $filters
  *   An associative array with filter values. Each item represents an argument
- *   to be passed to searchItems() method of the selector plugin.
- *   @see TMGMTBulkSelectorInterface::searchItems()
+ *   to be passed to TMGMTBulkSelectorInterface::searchItems().
  */
 function _tmgmt_bulk_search_and_store($plugin, $item_type, array $filters) {
   $translated_to = $filters['translated_to'];
@@ -30,7 +29,7 @@ function _tmgmt_bulk_search_and_store($plugin, $item_type, array $filters) {
  * @param array $items
  *   An array with the following keys: "plugin", "item_type", "item_id".
  */
-function _tmgmt_bulk_request_translation($items) {
+function _tmgmt_bulk_request_translation(array $items) {
   if (!isset($_SESSION['tmgmt_bulk_jobs_by_source_language'])) {
     $_SESSION['tmgmt_bulk_jobs_by_source_language'] = array();
   }

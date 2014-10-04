@@ -106,13 +106,18 @@ function tmgmt_bulk_form_submit(&$form, &$form_state) {
     default:
       return;
   }
-  $values = isset($form_state['values']['plugins'])
-    ? $form_state['values']['plugins'] : array();
+  $values = isset($form_state['values']['plugins']) ? $form_state['values']['plugins'] : array();
   $operations = array();
   foreach ($values as $plugin => $state) {
     if ($state['include'] && ($item_types = array_filter($state['item_types']))) {
       foreach ($item_types as $item_type) {
-        $operations[] = array('_tmgmt_bulk_search_and_store', array($plugin, $item_type, $state['filters']));
+        $operations[] = array(
+          '_tmgmt_bulk_search_and_store', array(
+            $plugin,
+            $item_type,
+            $state['filters'],
+          ),
+        );
       }
     }
   }
@@ -229,18 +234,17 @@ function tmgmt_bulk_add_to_cart($force) {
  */
 function tmgmt_bulk_add_to_cart_warning_form($form, &$form_state, $items_count, $tmgmt_cart_count) {
   $total = $items_count + $tmgmt_cart_count;
-  $message = 'WARNING: You are above to add %items_count item(s) to the cart (which already contains %tmgmt_cart_count items(s)).
-<br />The total amount of the items in the cart will become %total, and this could lead to the following problems:
-<br />1) the cart UI can become unresponsive,
-<br />2) the operation itself can take long time, and can be interrupted by the PHP execution time limit.
-<br />Are you sure you want to continue?';
   $args = array(
     '%items_count' => $items_count,
     '%tmgmt_cart_count' => $tmgmt_cart_count,
     '%total' => $total,
   );
   $form['description'] = array(
-    '#markup' => t($message, $args),
+    '#markup' => t('WARNING: You are above to add %items_count item(s) to the cart (which already contains %tmgmt_cart_count items(s)).
+<br />The total amount of the items in the cart will become %total, and this could lead to the following problems:
+<br />1) the cart UI can become unresponsive,
+<br />2) the operation itself can take long time, and can be interrupted by the PHP execution time limit.
+<br />Are you sure you want to continue?', $args),
   );
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['request_translation'] = array(
