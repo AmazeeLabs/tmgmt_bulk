@@ -3,7 +3,7 @@
 /**
  * Selector for the "i18n_string" source plugin.
  */
-class TMGMTBulkSelector_i18n_string extends TMGMTBulkSelector implements TMGMTBulkSelectorInterface {
+class TMGMTBulkSelectorI18nString extends TMGMTBulkSelectorBase implements TMGMTBulkSelectorInterface {
 
   /**
    * {@inheritdoc}

@@ -5,7 +5,7 @@
  *
  * Contains default implementations of some methods, and helper methods.
  */
-class TMGMTBulkSelector {
+class TMGMTBulkSelectorBase extends TMGMTPluginBase {
 
   /**
    * Processes $item_ids with $job_target_language filter.

@@ -5,8 +5,8 @@ core = 7.x
 
 dependencies[] = tmgmt_ui
 
-files[] = includes/TMGMTBulkSelectorInterface.inc
-files[] = includes/TMGMTBulkSelector.inc
-files[] = includes/TMGMTBulkSelector_entity.inc
-files[] = includes/TMGMTBulkSelector_i18n_string.inc
-files[] = includes/TMGMTBulkSelector_locale.inc
+files[] = plugin/TMGMTBulkSelectorInterface.inc
+files[] = plugin/TMGMTBulkSelectorBase.inc
+files[] = plugin/TMGMTBulkSelectorEntity.inc
+files[] = plugin/TMGMTBulkSelectorI18nString.inc
+files[] = plugin/TMGMTBulkSelectorLocale.inc

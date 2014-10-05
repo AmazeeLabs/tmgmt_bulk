@@ -3,7 +3,7 @@
 /**
  * TMGMT Bulk Selector plugin interface.
  */
-interface TMGMTBulkSelectorInterface {
+interface TMGMTBulkSelectorInterface extends TMGMTPluginBaseInterface {
 
   /**
    * Searches for items using given filters.
@@ -28,7 +28,8 @@ interface TMGMTBulkSelectorInterface {
    * Returns an array of form elements that represents plugin-specific filters.
    *
    * @return array
-   *   Form render array.
+   *   Form render array. The submitted values of that form elements will be
+   *   passed then to the $specific parameter of the searchItems() method.
    */
   public function getFormSpecificFilters();
 }

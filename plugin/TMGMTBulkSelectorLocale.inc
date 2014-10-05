@@ -3,7 +3,7 @@
 /**
  * Selector for the "locale" source plugin.
  */
-class TMGMTBulkSelector_locale extends TMGMTBulkSelector implements TMGMTBulkSelectorInterface {
+class TMGMTBulkSelectorLocale extends TMGMTBulkSelectorBase implements TMGMTBulkSelectorInterface {
 
   /**
    * {@inheritdoc}

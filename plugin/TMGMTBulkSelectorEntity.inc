@@ -3,7 +3,7 @@
 /**
  * Selector for the "entity" source plugin.
  */
-class TMGMTBulkSelector_entity extends TMGMTBulkSelector implements TMGMTBulkSelectorInterface {
+class TMGMTBulkSelectorEntity extends TMGMTBulkSelectorBase implements TMGMTBulkSelectorInterface {
 
   /**
    * {@inheritdoc}

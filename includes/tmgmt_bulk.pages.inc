@@ -29,7 +29,7 @@ function tmgmt_bulk_form($form, &$form_state) {
     '#tree' => TRUE,
   );
   foreach (tmgmt_source_plugin_info() as $plugin_type => $plugin) {
-    if (!empty($plugin['item types']) && ($selector = _tmgmt_bulk_get_selector($plugin_type))) {
+    if (!empty($plugin['item types']) && ($selector = tmgmt_bulk_selector_plugin_controller($plugin_type))) {
       $form['plugins'][$plugin_type] = array(
         '#type' => 'fieldset',
         '#title' => $plugin['label'],
