@@ -78,6 +78,11 @@ function tmgmt_bulk_form($form, &$form_state) {
     }
   }
 
+  if (!element_children($form['plugins'])) {
+    $form['description']['#markup'] = t('No plugins found.');
+    return $form;
+  }
+
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['request_translation'] = array(
     '#type' => 'submit',
