@@ -3,6 +3,7 @@ description = Allows to create translation jobs basing on existing translations.
 package = Translation Management
 core = 7.x
 
+dependencies[] = tmgmt
 dependencies[] = tmgmt_ui
 
 files[] = plugin/TMGMTBulkSelectorInterface.inc
