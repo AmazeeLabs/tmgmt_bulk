@@ -12,6 +12,8 @@
  * to search for the source items with user provided conditions. Machine names
  * should coincide with source plugin machine names.
  *
+ * Only those plugins will be used for which source plugins exist.
+ *
  * It's important that plugin class must extend the TMGMTBulkSelectorBase class
  * and implement the TMGMTBulkSelectorInterface. Otherwise it's skipped.
  *
