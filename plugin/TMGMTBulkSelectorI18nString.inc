@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Contains TMGMTBulkSelectorI18nString class.
+ */
+
+/**
  * Selector for the "i18n_string" source plugin.
  */
 class TMGMTBulkSelectorI18nString extends TMGMTBulkSelectorBase implements TMGMTBulkSelectorInterface {

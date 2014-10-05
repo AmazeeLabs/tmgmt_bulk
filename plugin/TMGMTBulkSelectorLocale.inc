@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Contains TMGMTBulkSelectorLocale class.
+ */
+
+/**
  * Selector for the "locale" source plugin.
  */
 class TMGMTBulkSelectorLocale extends TMGMTBulkSelectorBase implements TMGMTBulkSelectorInterface {

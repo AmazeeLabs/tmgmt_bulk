@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Contains TMGMTBulkSelectorInterface class.
+ */
+
+/**
  * TMGMT Bulk Selector plugin interface.
  */
 interface TMGMTBulkSelectorInterface extends TMGMTPluginBaseInterface {

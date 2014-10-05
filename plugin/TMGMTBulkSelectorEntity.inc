@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Contains TMGMTBulkSelectorEntity class.
+ */
+
+/**
  * Selector for the "entity" source plugin.
  */
 class TMGMTBulkSelectorEntity extends TMGMTBulkSelectorBase implements TMGMTBulkSelectorInterface {

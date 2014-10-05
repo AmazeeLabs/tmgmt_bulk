@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Contains TMGMTBulkSelectorBase class.
+ */
+
+/**
  * Base class for all TMGMTBulkSelectorInterface implementations.
  *
  * Contains default implementations of some methods, and helper methods.
