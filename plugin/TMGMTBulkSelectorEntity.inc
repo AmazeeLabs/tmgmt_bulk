@@ -30,6 +30,9 @@ class TMGMTBulkSelectorEntity extends TMGMTBulkSelectorBase implements TMGMTBulk
     );
     $query->condition("$source_language_table_alias.language", LANGUAGE_NONE, '<>');
 
+    // UBX-927 We only want query entities having English source.
+    $query->condition("$source_language_table_alias.language", array('en', 'en-US'), 'IN');
+
     if ($translated_to) {
       $target_language_table_alias = $query->leftJoin(
         'entity_translation',
