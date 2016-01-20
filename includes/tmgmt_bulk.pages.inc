@@ -84,10 +84,10 @@ function tmgmt_bulk_form($form, &$form_state) {
   }
 
   $form['actions'] = array('#type' => 'actions');
-  $form['actions']['request_translation'] = array(
-    '#type' => 'submit',
-    '#value' => t('Request translation'),
-  );
+//  $form['actions']['request_translation'] = array(
+//    '#type' => 'submit',
+//    '#value' => t('Request translation'),
+//  );
   $form['actions']['add_to_cart'] = array(
     '#type' => 'submit',
     '#value' => t('Add to cart'),
@@ -159,10 +159,10 @@ function tmgmt_bulk_request_translation_form($form, &$form_state) {
     '#required' => TRUE,
   );
   $form['actions'] = array('#type' => 'actions');
-  $form['actions']['request_translation'] = array(
-    '#type' => 'submit',
-    '#value' => t('Request translation'),
-  );
+//  $form['actions']['request_translation'] = array(
+//    '#type' => 'submit',
+//    '#value' => t('Request translation'),
+//  );
   $form['actions']['cancel'] = array(
     '#type' => 'link',
     '#title' => t('Cancel'),
@@ -252,10 +252,10 @@ function tmgmt_bulk_add_to_cart_warning_form($form, &$form_state, $items_count, 
 <br />Are you sure you want to continue?', $args),
   );
   $form['actions'] = array('#type' => 'actions');
-  $form['actions']['request_translation'] = array(
-    '#type' => 'submit',
-    '#value' => t('Request translation'),
-  );
+//  $form['actions']['request_translation'] = array(
+//    '#type' => 'submit',
+//    '#value' => t('Request translation'),
+//  );
   $form['actions']['add_to_cart'] = array(
     '#type' => 'submit',
     '#value' => t('Add to cart'),
